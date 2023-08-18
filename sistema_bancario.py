@@ -1,4 +1,5 @@
 import textwrap
+from abc import ABC, abstractclassmethod
         
 def menu():
     menu = """
@@ -12,6 +13,54 @@ def menu():
 
     => """
     return input(textwrap.dedent(menu))
+
+class Conta:
+    def __init__(self, saldo, nova_conta, sacar, depositar):
+        self.saldo = saldo
+        self.nova_conta = nova_conta
+        self.sacar = sacar 
+        self.depositar = depositar
+
+class ContaCorrente(Conta):
+    def __init__(self, saldo, nova_conta, sacar, depositar, limite, limite_saque):
+        super().__init__(saldo, nova_conta, sacar, depositar)
+        self.limite = limite
+        self.limite_saque = limite_saque
+
+class Historico:
+    def __init__(self, adcionar_transacao):
+        self.adcionar_transacao = adcionar_transacao
+            
+
+class Interface(ABC): 
+    @abstractclassmethod
+    def registrar(self, conta):
+        self.conta = conta
+
+class Deposito(Interface):
+    def __init__(self, conta, valor):
+        super().__init__(conta)
+        self.valor = valor
+
+class Saque(Interface):
+    def __init__(self, conta, valor):
+        super().__init__(conta)
+        self.valor = valor
+
+class Cliente: #deixei essa opção pronta pra entender melhor as demais
+    def __init__(self, endereco):
+        self.endereco = endereco
+        self.contas = []
+
+    def realizar_transacao(self, conta, transacao):
+        transacao.registrar(conta)
+
+    def adcionar_conta(self, conta):
+        self.contas.append(conta)
+
+class PessoaFisica(Cliente):
+    def __init__(self, endereco, contas):
+        super().__init__(endereco, contas)
 
 def deposito(saldo, valor, extrato, /): 
     if valor > 0: 
