@@ -14,29 +14,23 @@ def menu():
     return input(textwrap.dedent(menu))
 
 def deposito(saldo, valor, extrato, /): 
-    saldo_extrato = {saldo: 0, extrato: ""}
-
     if valor > 0: 
         saldo += valor
         extrato += f"Depósito: R$ {valor:.2f}\n"
+        print("\n Depósito realizado com sucesso! ")
 
-        saldo_extrato[saldo] = saldo
-        saldo_extrato[extrato] = extrato
-        
-        
     else: 
         print("Operação falhou! O valor informado é inválido. ")
 
-    return saldo_extrato
+    return saldo, extrato
 
 def saque(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
-    valor = float(input("Informe o valor do saque: "))
 
     excedeu_saldo = valor > saldo
 
     excedeu_limite = valor > limite
 
-    excedeu_saques = valor > numero_saques >= LIMITE_SAQUES
+    excedeu_saques = valor > numero_saques >= limite_saques
 
     if excedeu_saldo:
         print("Operação falhou! Você não tem saldo suficiente. ")
@@ -51,11 +45,14 @@ def saque(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
         saldo -= valor
         extrato += f"Saque: R$ {valor:.2f}\n"
         numero_saques += 1
+        print("\n Saque realizado com sucesso! ")
 
     else:
         print("Operação falhou! O valor informado é inválido. ")
 
-def extrato(saldo, /, *, extrato): 
+    return saldo, extrato
+
+def exibir_extrato(saldo, /, *, extrato): 
     print("\n=============EXTRATO=============")
     print("Não foram realizados movimentações." if not extrato else extrato) 
     print(f"\nSaldo: R$ {saldo:.2f}\n")
@@ -115,44 +112,44 @@ def main():
     while True:
         opcao = menu()
 
-    if opcao == "1":
-        valor = float(input("Informe o valor do depósito: "))
+        if opcao == "1":
+            valor = float(input("Informe o valor do depósito: "))
 
-        saldo, extrato = deposito(saldo, valor, extrato)
+            saldo, extrato = deposito(saldo, valor, extrato)
 
-    elif opcao == "2":
-        valor = float(input("Informe o valor do saque: "))
+        elif opcao == "2":
+            valor = float(input("Informe o valor do saque: "))
 
-        saldo, extrato = saque(
-            saldo=saldo,
-            valor=valor,
-            extrato=extrato,
-            limite=limite,
-            numero_saques=numero_saques,
-            limite_saques=LIMITE_SAQUES,
-        )
+            saldo, extrato = saque(
+                saldo=saldo,
+                valor=valor,
+                extrato=extrato,
+                limite=limite,
+                numero_saques=numero_saques,
+                limite_saques=LIMITE_SAQUES,
+            )
 
-    elif opcao == "3":
-        extrato(saldo, extrato=extrato)
+        elif opcao == "3":
+            exibir_extrato(saldo, extrato=extrato)
 
-    elif opcao == "4":
-        criar_usuario(usuarios)
+        elif opcao == "4":
+            criar_usuario(usuarios)
 
-    elif opcao == "5":
-        numero_conta = len(contas) + 1
-        conta = criar_conta(AGENCIA, numero_conta, usuarios)
+        elif opcao == "5":
+            numero_conta = len(contas) + 1
+            conta = criar_conta(AGENCIA, numero_conta, usuarios)
 
-        if conta:
-            contas.append(conta)
+            if conta:
+                contas.append(conta)
 
-    elif opcao == "6":
-        listar_contas(contas)
+        elif opcao == "6":
+            listar_contas(contas)
 
-    elif opcao == "0":
-        break
+        elif opcao == "0":
+            break
 
-    else:
-        print("Operação inválida, por favor selecione novamente a operação desejada.")
+        else:
+            print("Operação inválida, por favor selecione novamente a operação desejada.")
 
 
 main()
